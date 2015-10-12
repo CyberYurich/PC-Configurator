@@ -85,13 +85,12 @@ private:
     QList<Component*>* listSoft;
     QList<Component*>* listOthers;
 
-    MyTreeWidget* addTreeWidget(QList<Component*>* list, QString name,
-                                QString str1 = "", QString str2 = "");
+    MyTreeWidget* addTreeWidget(QList<Component*>* list, ComponentType type,
+                                QString name, QString str1 = "", QString str2 = "");
     void refreshTree();
 
     void costPriceMarginEdit(QTreeWidgetItem* item, int column, MyTreeWidget *tree,
                              Component *componentForEdit);
-    void advansedParametersEdit(QTreeWidgetItem* item, int column, Component* componentForEdit);
 
     void clearAndDeleteList(QList<Component*>* list);
     void clearAndDeleteAllLists();

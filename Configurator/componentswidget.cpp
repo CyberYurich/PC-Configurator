@@ -25,19 +25,22 @@ ComponentsWidget::ComponentsWidget(QWidget *parent) :
     listSoft    = new QList<Component*>;
     listOthers  = new QList<Component*>;
 
-    treeMB      = addTreeWidget(listMB, "Материнские платы");
-    treeCase    = addTreeWidget(listCase, "Корпусы");
-    treeCPU     = addTreeWidget(listCPU, "Процессоры");
-    treeCooler  = addTreeWidget(listCooler, "Куллеры");
-    treePSU     = addTreeWidget(listPSU, "Блоки питания", "Мощность");
-    treeRAM     = addTreeWidget(listRAM, "Опер. память", "Кол-во модулей", "Общий объем");
-    treeHDD     = addTreeWidget(listHDD, "HDD и SSD");
-    treeVideo   = addTreeWidget(listVideo, "Видеокарты", "Ранг энергопотребления(1-3)");
-    treeDVD     = addTreeWidget(listDVD, "DVD приводы");
-    treeKbMouse = addTreeWidget(listKbMouse, "Клавиатуры и мыши",
+    treeMB      = addTreeWidget(listMB, COMPONENT_DEFAULT, "Материнские платы");
+    treeCase    = addTreeWidget(listCase, COMPONENT_DEFAULT, "Корпусы");
+    treeCPU     = addTreeWidget(listCPU, COMPONENT_DEFAULT, "Процессоры");
+    treeCooler  = addTreeWidget(listCooler, COMPONENT_DEFAULT, "Куллеры");
+    treePSU     = addTreeWidget(listPSU, COMPONENT_PSU, "Блоки питания", "Мощность");
+    treeRAM     = addTreeWidget(listRAM, COMPONENT_RAM, "Опер. память", "Кол-во модулей",
+                                "Общий объем");
+    treeHDD     = addTreeWidget(listHDD, COMPONENT_DEFAULT, "HDD и SSD");
+    treeVideo   = addTreeWidget(listVideo, COMPONENT_VIDEO, "Видеокарты",
+                                "Ранг энергопотребления(1-3)");
+    treeDVD     = addTreeWidget(listDVD, COMPONENT_DEFAULT, "DVD приводы");
+    treeKbMouse = addTreeWidget(listKbMouse, COMPONENT_KB_MOUSE, "Клавиатуры и мыши",
                                 "Тип(KB или Mouse)", "PS/2 или USB");
-    treeSoft    = addTreeWidget(listSoft, "Софт", "Тип(OS, Lic, Other)");
-    treeOthers  = addTreeWidget(listOthers, "Дополнительно(PCIe)", "размер PCIe(x...)");
+    treeSoft    = addTreeWidget(listSoft, COMPONENT_SOFT, "Софт", "Тип(OS, Lic, Other)");
+    treeOthers  = addTreeWidget(listOthers, COMPONENT_OTHERS, "Дополнительно(PCIe)",
+                                "размер PCIe(x...)");
 
     NoEditorDelegate* noEditDel = new NoEditorDelegate(this);
     MyDoubleSpinboxDelegate* doubleSpinBoxDel = new MyDoubleSpinboxDelegate(this);
@@ -152,106 +155,8 @@ void ComponentsWidget::refreshTree()
     QListIterator<Component*> i(*tree->getList());
     while (i.hasNext())
     {
-        switch(TabWidget->currentIndex())
-        {
-        case 0:
-        case 1:
-        case 2:
-        case 3:
-        case 6:
-        case 8:
-            {
-                Component* comp = i.next();
-                QTreeWidgetItem* itm = new QTreeWidgetItem(3);
-                itm->setText(0, comp->getName());
-                itm->setText(1, QString::number(comp->getCost(),'f', 2));
-                itm->setText(2, QString::number(comp->getPrice(),'f', 2));
-                itm->setText(3, QString::number(comp->getMargin(),'f', 2)+"%");
-                itm->setFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-                tree->addTopLevelItem(itm);        
-                break;
-            }
-        case 4:
-            {
-                PSU* comp = static_cast<PSU*>(i.next());
-                QTreeWidgetItem* itm = new QTreeWidgetItem(4);
-                itm->setText(0, comp->getName());
-                itm->setText(1, QString::number(comp->getCost(),'f', 2));
-                itm->setText(2, QString::number(comp->getPrice(),'f', 2));
-                itm->setText(3, QString::number(comp->getMargin(),'f', 2)+"%");
-                itm->setText(4, QString::number(comp->getPower()));
-                itm->setFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-                tree->addTopLevelItem(itm);
-                break;
-            }
-        case 5:
-            {
-                RAM* comp = static_cast<RAM*>(i.next());
-                QTreeWidgetItem* itm = new QTreeWidgetItem(5);
-                itm->setText(0, comp->getName());
-                itm->setText(1, QString::number(comp->getCost(),'f', 2));
-                itm->setText(2, QString::number(comp->getPrice(),'f', 2));
-                itm->setText(3, QString::number(comp->getMargin(),'f', 2)+"%");
-                itm->setText(4, QString::number(comp->getCountOfModules()));
-                itm->setText(5, QString::number(comp->getCapacity()));
-                itm->setFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-                tree->addTopLevelItem(itm);
-                break;
-            }
-        case 7:
-            {
-                Video* comp = static_cast<Video*>(i.next());
-                QTreeWidgetItem* itm = new QTreeWidgetItem(4);
-                itm->setText(0, comp->getName());
-                itm->setText(1, QString::number(comp->getCost(),'f', 2));
-                itm->setText(2, QString::number(comp->getPrice(),'f', 2));
-                itm->setText(3, QString::number(comp->getMargin(),'f', 2)+"%");
-                itm->setText(4, comp->getPowerRank());
-                itm->setFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-                tree->addTopLevelItem(itm);
-                break;
-            }
-        case 9:
-            {
-                KbMouse* comp = static_cast<KbMouse*>(i.next());
-                QTreeWidgetItem* itm = new QTreeWidgetItem(5);
-                itm->setText(0, comp->getName());
-                itm->setText(1, QString::number(comp->getCost(),'f', 2));
-                itm->setText(2, QString::number(comp->getPrice(),'f', 2));
-                itm->setText(3, QString::number(comp->getMargin(),'f', 2)+"%");
-                itm->setText(4, comp->getTypeKbMouse());
-                itm->setText(5, comp->getConnector());
-                itm->setFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-                tree->addTopLevelItem(itm);
-                break;
-            }
-        case 10:
-            {
-                Soft* comp = static_cast<Soft*>(i.next());
-                QTreeWidgetItem* itm = new QTreeWidgetItem(4);
-                itm->setText(0, comp->getName());
-                itm->setText(1, QString::number(comp->getCost(),'f', 2));
-                itm->setText(2, QString::number(comp->getPrice(),'f', 2));
-                itm->setText(3, QString::number(comp->getMargin(),'f', 2)+"%");
-                itm->setText(4, comp->getTypeSoft());
-                itm->setFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-                tree->addTopLevelItem(itm);
-                break;
-            }
-        case 11:
-            {
-                Others* comp = static_cast<Others*>(i.next());
-                QTreeWidgetItem* itm = new QTreeWidgetItem(4);
-                itm->setText(0, comp->getName());
-                itm->setText(1, QString::number(comp->getCost(),'f', 2));
-                itm->setText(2, QString::number(comp->getPrice(),'f', 2));
-                itm->setText(3, QString::number(comp->getMargin(),'f', 2)+"%");
-                itm->setText(4, comp->getPcie());
-                itm->setFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-                tree->addTopLevelItem(itm);
-                break;
-            }
-        }
+        Component* comp = i.next();
+        tree->addTopLevelItem(comp->getTreeWidgetItem());
     }
     tree->header()->resizeSections(QHeaderView::ResizeToContents);
     emit componentsChanged();
@@ -350,8 +255,8 @@ void ComponentsWidget::addComponent(Component *comp)
     refreshTree();
 }
 
-MyTreeWidget *ComponentsWidget::addTreeWidget(QList<Component*>* list, QString name,
-                                              QString str1, QString str2)
+MyTreeWidget *ComponentsWidget::addTreeWidget(QList<Component*>* list, ComponentType type,
+                                              QString name, QString str1, QString str2)
 {
     QStringList strTreeHeaderLables;
     strTreeHeaderLables.append("Название");
@@ -359,7 +264,7 @@ MyTreeWidget *ComponentsWidget::addTreeWidget(QList<Component*>* list, QString n
     strTreeHeaderLables.append("Выходная цена");
     strTreeHeaderLables.append("Маржинальность");
 
-    MyTreeWidget* result = new MyTreeWidget(this);
+    MyTreeWidget* result = new MyTreeWidget(this, list, type);
     QObject::connect(result, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)), this,
                      SLOT(treeComponent_currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)));
     if(str1 != "")
@@ -385,7 +290,6 @@ MyTreeWidget *ComponentsWidget::addTreeWidget(QList<Component*>* list, QString n
     result->header()->setStretchLastSection(false);
     result->header()->resizeSections(QHeaderView::ResizeToContents);
     result->setSortingEnabled(true);
-    result->setList(list);
     TabWidget->addTab(result, name);
 
     return result;
@@ -394,71 +298,11 @@ MyTreeWidget *ComponentsWidget::addTreeWidget(QList<Component*>* list, QString n
 void ComponentsWidget::on_btnAddComponent_clicked()
 {
     MyTreeWidget* tree = static_cast<MyTreeWidget*>(TabWidget->currentWidget());
-    switch(TabWidget->currentIndex())
-    {
-    case 0:
-    case 1:
-    case 2:
-    case 3:
-    case 6:
-    case 8:
-        {
-            addEditCompoents componentsDialog(COMPONENT_DEFAULT, *(tree->getList()), this);
-            connect(&componentsDialog, SIGNAL(sendComponent(Component*)),
-                    this, SLOT(addComponent(Component*)));
-            componentsDialog.exec();
-            break;
-        }
-    case 4:
-        {
-            addEditCompoents componentsDialog(COMPONENT_PSU, *(tree->getList()), this);
-            connect(&componentsDialog, SIGNAL(sendComponent(Component*)),
-                    this, SLOT(addComponent(Component*)));
-            componentsDialog.exec();
-            break;
-        }
-    case 5:
-        {
-            addEditCompoents componentsDialog(COMPONENT_RAM, *(tree->getList()), this);
-            connect(&componentsDialog, SIGNAL(sendComponent(Component*)),
-                    this, SLOT(addComponent(Component*)));
-            componentsDialog.exec();
-            break;
-        }
-    case 7:
-        {
-            addEditCompoents componentsDialog(COMPONENT_VIDEO, *(tree->getList()), this);
-            connect(&componentsDialog, SIGNAL(sendComponent(Component*)),
-                    this, SLOT(addComponent(Component*)));
-            componentsDialog.exec();
-            break;
-        }
-    case 9:
-        {
-            addEditCompoents componentsDialog(COMPONENT_KB_MOUSE, *(tree->getList()), this);
-            connect(&componentsDialog, SIGNAL(sendComponent(Component*)),
-                    this, SLOT(addComponent(Component*)));
-            componentsDialog.exec();
-            break;
-        }
-    case 10:
-        {
-            addEditCompoents componentsDialog(COMPONENT_SOFT, *(tree->getList()), this);
-            connect(&componentsDialog, SIGNAL(sendComponent(Component*)),
-                    this, SLOT(addComponent(Component*)));
-            componentsDialog.exec();
-            break;
-        }
-    case 11:
-        {
-            addEditCompoents componentsDialog(COMPONENT_OTHERS, *(tree->getList()), this);
-            connect(&componentsDialog, SIGNAL(sendComponent(Component*)),
-                    this, SLOT(addComponent(Component*)));
-            componentsDialog.exec();
-            break;
-        }
-    }
 
+    addEditCompoents componentsDialog(tree->getType(), *(tree->getList()), this);
+    connect(&componentsDialog, SIGNAL(sendComponent(Component*)),
+            this, SLOT(addComponent(Component*)));
+    componentsDialog.exec();
 }
 
 void ComponentsWidget::on_btnDeleteComponent_clicked()
@@ -589,7 +433,10 @@ void ComponentsWidget::itemComponent_editValue(QTreeWidgetItem *item, int column
     if(column <= 3)
         costPriceMarginEdit(item, column, tree, componentForEdit);
     else
-        advansedParametersEdit(item, column, componentForEdit);
+    {
+        componentForEdit->setAdvancedParameter(item, column);
+        emit componentsChanged();
+    }
 }
 
 void ComponentsWidget::costPriceMarginEdit(QTreeWidgetItem *item, int column, MyTreeWidget* tree,
@@ -623,57 +470,6 @@ void ComponentsWidget::costPriceMarginEdit(QTreeWidgetItem *item, int column, My
 
     connect(tree, SIGNAL(itemChanged(QTreeWidgetItem*,int)),
                this, SLOT(itemComponent_editValue(QTreeWidgetItem*,int)));
-    emit componentsChanged();
-}
-
-void ComponentsWidget::advansedParametersEdit(QTreeWidgetItem *item, int column,
-                                              Component* componentForEdit)
-{
-    switch(TabWidget->currentIndex())
-    {
-    case 4:
-        {
-            PSU* comp = static_cast<PSU*>(componentForEdit);
-            comp->setPower(item->text(column).toInt());
-            break;
-        }
-    case 5:
-        {
-            RAM* comp = static_cast<RAM*>(componentForEdit);
-            if(column == 4)
-                comp->setCountOfModules(item->text(column).toShort());
-            else if(column == 5)
-                comp->setCapacity(item->text(column).toShort());
-            break;
-        }
-    case 7:
-        {
-            Video* comp = static_cast<Video*>(componentForEdit);
-            comp->setPowerRank(item->text(column));
-            break;
-        }
-    case 9:
-        {
-            KbMouse* comp = static_cast<KbMouse*>(componentForEdit);
-            if(column == 4)
-                comp->setTypeKbMouse(item->text(column));
-            else if(column == 5)
-                comp->setConnector(item->text(column));
-            break;
-        }
-    case 10:
-        {
-            Soft* comp = static_cast<Soft*>(componentForEdit);
-            comp->setTypeSoft(item->text(column));
-            break;
-        }
-    case 11:
-        {
-            Others* comp = static_cast<Others*>(componentForEdit);
-            comp->setPcie(item->text(column));
-            break;
-        }
-    }
     emit componentsChanged();
 }
 

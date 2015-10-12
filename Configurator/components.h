@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QDebug>
 #include <cmath>
+#include <QTreeWidget>
 #include "platform.h"
 
 enum ComponentType
@@ -50,6 +51,12 @@ public:
     double getMargin() const {return margin;}
     QList<QString>* getConnectedPlatforms() const {return connectedPlatforms;}
 
+    // template method
+    QTreeWidgetItem* getTreeWidgetItem();
+
+    virtual void setAdvancedParameter(QTreeWidgetItem* item, int column)
+    {Q_UNUSED(item) Q_UNUSED(column)}
+
     virtual QDataStream& saveComponent(QDataStream &stream);
     virtual QDataStream& loadComponent(QDataStream &stream);
 
@@ -67,6 +74,9 @@ private:
     void setPrice();
     void setCost();
     void setMargin();
+
+    // hook for template method
+    virtual void setAdditionalColumns(QTreeWidgetItem* item) {Q_UNUSED(item)}
 };
 
 Q_DECLARE_METATYPE(Component*)
@@ -86,10 +96,14 @@ public:
     void setPower(int power){this->power = power;}
     int getPower() const {return power;}
 
+    virtual void setAdvancedParameter(QTreeWidgetItem* item, int column) override;
+
     virtual QDataStream& saveComponent(QDataStream &stream) override;
     virtual QDataStream& loadComponent(QDataStream &stream) override;
 
     virtual QDataStream& uploadComponent(QDataStream &stream) override;
+
+    virtual void setAdditionalColumns(QTreeWidgetItem* item) override;
 
 private:
     int power;
@@ -116,10 +130,14 @@ public:
     short getCountOfModules() const {return countOfModules;}
     short getCapacity() const {return capacity;}
 
+    virtual void setAdvancedParameter(QTreeWidgetItem* item, int column) override;
+
     virtual QDataStream& saveComponent(QDataStream &stream) override;
     virtual QDataStream& loadComponent(QDataStream &stream) override;
 
     virtual QDataStream& uploadComponent(QDataStream &stream) override;
+
+    virtual void setAdditionalColumns(QTreeWidgetItem* item) override;
 
 private:
     short countOfModules;
@@ -144,10 +162,14 @@ public:
     void setPowerRank(QString powerRank){this->powerRank = powerRank;}
     QString getPowerRank() const {return powerRank;}
 
+    virtual void setAdvancedParameter(QTreeWidgetItem* item, int column) override;
+
     virtual QDataStream& saveComponent(QDataStream &stream) override;
     virtual QDataStream& loadComponent(QDataStream &stream) override;
 
     virtual QDataStream& uploadComponent(QDataStream &stream) override;
+
+    virtual void setAdditionalColumns(QTreeWidgetItem* item) override;
 
 private:
     QString powerRank;
@@ -176,10 +198,14 @@ public:
     QString getTypeKbMouse() const {return type;}
     QString getConnector() const {return connector;}
 
+    virtual void setAdvancedParameter(QTreeWidgetItem* item, int column) override;
+
     virtual QDataStream& saveComponent(QDataStream &stream) override;
     virtual QDataStream& loadComponent(QDataStream &stream) override;
 
     virtual QDataStream& uploadComponent(QDataStream &stream) override;
+
+    virtual void setAdditionalColumns(QTreeWidgetItem* item) override;
 
 private:
     QString type;
@@ -204,10 +230,14 @@ public:
     void setTypeSoft(QString type){this->type = type;}
     QString getTypeSoft() const {return type;}
 
+    virtual void setAdvancedParameter(QTreeWidgetItem* item, int column) override;
+
     virtual QDataStream& saveComponent(QDataStream &stream) override;
     virtual QDataStream& loadComponent(QDataStream &stream) override;
 
     virtual QDataStream& uploadComponent(QDataStream &stream) override;
+
+    virtual void setAdditionalColumns(QTreeWidgetItem* item) override;
 
 private:
     QString type;
@@ -231,10 +261,14 @@ public:
     void setPcie(QString pcie){this->pcie = pcie;}
     QString getPcie() const {return pcie;}
 
+    virtual void setAdvancedParameter(QTreeWidgetItem* item, int column) override;
+
     virtual QDataStream& saveComponent(QDataStream &stream) override;
     virtual QDataStream& loadComponent(QDataStream &stream) override;
 
     virtual QDataStream& uploadComponent(QDataStream &stream) override;
+
+    virtual void setAdditionalColumns(QTreeWidgetItem* item) override;
 
 private:
     QString pcie;
